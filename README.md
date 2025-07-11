@@ -18,23 +18,10 @@ cd ~/notes-app
 
 Create ~/notes-app/docker-compose.yml with:
 
-version: '3.8'
-services:
-  backend:
-    image: ladozhsky/notes-backend:latest
-    volumes:
-      - ./notes.json:/app/notes.json
-    expose:
-      - "5000"
-    restart: unless-stopped
+nano docker-compose.yml
 
-  frontend:
-    image: ladozhsky/notes-frontend:latest
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
-    restart: unless-stopped
+<img width="287" height="272" alt="image" src="https://github.com/user-attachments/assets/cca693bd-52e1-489d-a0d8-e308d29c4fd9" />
+
 
 4. **Add notes.json**
 Create ~/notes-app/notes.json
