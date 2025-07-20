@@ -117,8 +117,8 @@ jobs:
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
 
-          # Надёжно пишем приватник без CRLF
-          echo "${{ secrets.VM_SSH_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+          # Декодируем base64 прямо в id_rsa
+          echo "${{ secrets.VM_SSH_KEY_B64 }}" | base64 --decode > ~/.ssh/id_rsa
 
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
