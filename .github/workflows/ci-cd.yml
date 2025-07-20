@@ -117,15 +117,17 @@ jobs:
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
 
-          # Ни пробелов слева, ни кавычек вокруг, просто точная вставка
-          cat > ~/.ssh/id_rsa << 'EOF'
-      ${{ vars.VM_SSH_KEY }}
-      EOF
+          # Переменная VM_SSH_KEY должна содержать PEM без дополнительных пробелов
+          echo "${{ vars.VM_SSH_KEY }}" > ~/.ssh/id_rsa
 
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
 
-
+      - name: Debug full id_rsa
+        run: |
+          echo "---- FULL id_rsa ----"
+          cat ~/.ssh/id_rsa
+          echo "---- END id_rsa ----"
 
       - name: Test SSH access
         run: |
