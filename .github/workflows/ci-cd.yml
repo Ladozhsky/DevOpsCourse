@@ -112,19 +112,30 @@ jobs:
       #     push: true
       #     tags: ${{ secrets.DOCKERHUB_USERNAME }}/notes-backend:latest
 
-      - name: Setup SSH agent
+      - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 700 ~/.ssh
+
+          # Надёжно пишем приватник без CRLF
+          echo "${{ secrets.VM_SSH_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Test SSH access
+        run: |
+          ssh -v -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
+            ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} echo "SSH OK"
+
 
       - name: Copy prod docker-compose to VM
         run: |
           rsync -avz \
-            -e "ssh -vvv -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
+            -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -v" \
             docker-compose.prod.yml \
             ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:/home/${{ secrets.VM_USER }}/docker-compose.yml
+
 
 
       - name: Deploy on VM
