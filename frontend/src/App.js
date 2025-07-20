@@ -25,6 +25,7 @@ function App() {
 
     return (
         <div style={{ padding: 20 }}>
+            <h1>Deployment was automatically updated</h1>
             <h1>Notes</h1>
             <input value={text} onChange={e => setText(e.target.value)} />
             <button onClick={addNote}>Add</button>
