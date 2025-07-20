@@ -116,28 +116,10 @@ jobs:
         run: |
           mkdir -p ~/.ssh && chmod 700 ~/.ssh
 
-          # Убираем символы возврата каретки, чтобы получилось чистое LF
           echo "${{ vars.VM_SSH_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
 
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
-
-
-      - name: Inspect cleaned id_rsa
-        run: |
-          echo "→ file type:"; file ~/.ssh/id_rsa
-          echo "→ fingerprint:"; ssh-keygen -lf ~/.ssh/id_rsa
-          echo "→ hexdump:"; hexdump -C -n 64 ~/.ssh/id_rsa
-
-      - name: Compare fingerprints
-        run: |
-          echo "→ Runner fingerprint:"; ssh-keygen -lf ~/.ssh/id_rsa
-          echo
-          echo "→ VM authorized_keys fingerprint:"
-          ssh -o StrictHostKeyChecking=no \
-              ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} \
-              ssh-keygen -lf ~/.ssh/authorized_keys
-
 
       - name: Test SSH access
         run: |
@@ -151,8 +133,6 @@ jobs:
             -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -v" \
             docker-compose.prod.yml \
             ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:/home/${{ secrets.VM_USER }}/docker-compose.yml
-
-
 
       - name: Deploy on VM
         run: |
