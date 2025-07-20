@@ -122,7 +122,7 @@ jobs:
       - name: Copy prod docker-compose to VM
         run: |
           rsync -avz \
-            -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
+            -e "ssh -v -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
             docker-compose.prod.yml \
             ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:/home/${{ secrets.VM_USER }}/docker-compose.yml
 
