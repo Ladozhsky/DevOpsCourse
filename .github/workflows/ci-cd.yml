@@ -116,10 +116,10 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-          # Вот тут пишем ключ целиком, со всеми переводами строк
-          cat << 'EOF' > ~/.ssh/id_rsa
-          ${{ secrets.VM_SSH_KEY }}
-          EOF
+
+          # вот тут гарантированно сохраняются все переводы строк из секрета
+          printf '%s\n' "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_rsa
+
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
 
