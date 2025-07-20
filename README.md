@@ -1,3 +1,22 @@
+# CI/CD deployment:
+
+Jobs to build frontend and backend are triggered by PR
+
+Deploy job is triggred by push or merge to main / Run from actions in github UI
+Deploy job does:
+1. Builds and updates images in docker hub
+2. Connects with VM
+3. Stop containers
+4. Update docker-compose.yml with docker-compose.prod.yml
+5. pulls images
+6. runs updated containers
+
+<img width="724" height="359" alt="image" src="https://github.com/user-attachments/assets/77782456-5dc9-4b80-a832-fafc743f15a1" />
+
+<img width="472" height="282" alt="image" src="https://github.com/user-attachments/assets/8df478f3-3046-46ea-aa97-bf7993cc2f83" />
+
+
+
 # Quick Start: Notes App on GCP VM
 
 Follow these steps in your GCP VM SSH terminal.
