@@ -129,6 +129,16 @@ jobs:
           echo "→ fingerprint:"; ssh-keygen -lf ~/.ssh/id_rsa
           echo "→ hexdump:"; hexdump -C -n 64 ~/.ssh/id_rsa
 
+      - name: Compare fingerprints
+        run: |
+          echo "→ Runner fingerprint:"; ssh-keygen -lf ~/.ssh/id_rsa
+          echo
+          echo "→ VM authorized_keys fingerprint:"
+          ssh -o StrictHostKeyChecking=no \
+              ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} \
+              ssh-keygen -lf ~/.ssh/authorized_keys
+
+
       - name: Test SSH access
         run: |
           ssh -vvv -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
