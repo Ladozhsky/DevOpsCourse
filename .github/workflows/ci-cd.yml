@@ -123,11 +123,14 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Debug full id_rsa
+      - name: Inspect id_rsa on runner
         run: |
-          echo "---- FULL id_rsa ----"
-          cat ~/.ssh/id_rsa
-          echo "---- END id_rsa ----"
+          echo "→ file type:"
+          file ~/.ssh/id_rsa
+          echo; echo "→ fingerprint (if valid):"
+          ssh-keygen -lf ~/.ssh/id_rsa || true
+          echo; echo "→ hexdump first 3 lines:"
+          hexdump -C -n 100 ~/.ssh/id_rsa
 
       - name: Test SSH access
         run: |
