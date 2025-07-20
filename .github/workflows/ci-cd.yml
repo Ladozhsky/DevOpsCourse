@@ -112,17 +112,21 @@ jobs:
       #     push: true
       #     tags: ${{ secrets.DOCKERHUB_USERNAME }}/notes-backend:latest
 
-      - name: Setup SSH agent
+      - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 700 ~/.ssh
+          # Вот тут пишем ключ целиком, со всеми переводами строк
+          cat << 'EOF' > ~/.ssh/id_rsa
+          ${{ secrets.VM_SSH_KEY }}
+          EOF
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
 
       - name: Copy prod docker-compose to VM
         run: |
           rsync -avz \
-            -e "ssh -v -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
+            -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
             docker-compose.prod.yml \
             ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:/home/${{ secrets.VM_USER }}/docker-compose.yml
 
